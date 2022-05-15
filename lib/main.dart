@@ -139,7 +139,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<String> downloadJson() async {
     FTPConnect ftpConnect = FTPConnect(ipEditingController.text,
-        user: userEditingController.text, pass: passEditingController.text);
+        user: userEditingController.text,
+        pass: passEditingController.text,
+        port: 2121);
     File file = File('EMPTY FILE');
     try {
       await Permission.storage.request();
@@ -196,7 +198,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void sendImage() async {
     FTPConnect ftpConnect = FTPConnect(ipEditingController.text,
-        user: userEditingController.text, pass: passEditingController.text);
+        user: userEditingController.text,
+        pass: passEditingController.text,
+        port: 2121);
     try {
       await ftpConnect.connect();
       await ftpConnect.uploadFile(currentFile);
