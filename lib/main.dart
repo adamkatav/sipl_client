@@ -6,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:ftpconnect/ftpconnect.dart';
 import 'package:path_provider/path_provider.dart';
 import 'game.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'package:flame/game.dart';
 import 'package:flutter/services.dart';
@@ -39,71 +40,69 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int appState = 2;
+  String jsonPath = '';
+  bool isImageChosen = false;
   Image? _chosenImage;
   File? _chosenImageFile;
-  TextEditingController ipEditingController = TextEditingController();
-  TextEditingController userEditingController = TextEditingController();
-  TextEditingController passEditingController = TextEditingController();
+  TextEditingController ipEditingController =
+      TextEditingController(text: '192.168.0.129');
+  TextEditingController userEditingController =
+      TextEditingController(text: 'adam');
+  TextEditingController passEditingController =
+      TextEditingController(text: '318758489');
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: ListView(
-          //mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-              ElevatedButton(
-                  onPressed: () => chooseImage(ImageSource.gallery),
-                  child: const Text('Choose Image')),
-              ElevatedButton(
-                onPressed: () => chooseImage(ImageSource.camera),
-                child: const Text('Take picture'),
-              )
-            ]),
-            Row(
-              children: <Widget>[
-                Expanded(
-                    flex: 1,
-                    child: TextFormField(
-                      controller: userEditingController,
-                      decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          labelText: 'username'),
-                    )),
-                Expanded(
-                    flex: 1,
-                    child: TextFormField(
-                      controller: passEditingController,
-                      decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          labelText: 'password'),
-                    ))
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                    flex: 2,
-                    child: TextFormField(
-                      controller: ipEditingController,
-                      decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          labelText: 'FTP server IP'),
-                    )),
-                ElevatedButton(
-                    onPressed: sendImage, child: const Text('Send image!')),
-                ElevatedButton(onPressed: runGame, child: const Text('Run!'))
-              ],
-            ),
-            currentImage,
-          ],
-        ),
-      ),
-      // This trailing comma makes auto-formatting nicer for build methods.
+    Widget spinkit = const SpinKitRotatingCircle(
+      color: Colors.white,
+      size: 50.0,
     );
+    if (appState == 0) {
+      return spinkit;
+    } else if (appState == 1) {
+      return GameWidget(game: MyGame(jsonPath));
+    } else {
+      return Scaffold(
+        body: Container(
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/images/sipl.jpg'),
+                  fit: BoxFit.cover)),
+          child: ListView(
+            //mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    ElevatedButton(
+                        onPressed: () {
+                          chooseImage(ImageSource.gallery);
+                          isImageChosen = true;
+                        },
+                        child: const Text('Choose Image')),
+                    ElevatedButton(
+                      onPressed: () {
+                        SystemChrome.setPreferredOrientations([
+                          DeviceOrientation.landscapeLeft,
+                          DeviceOrientation.landscapeRight,
+                        ]);
+                        chooseImage(ImageSource.camera);
+                        isImageChosen = true;
+                      },
+                      child: const Text('Take picture'),
+                    )
+                  ]),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(onPressed: runGame, child: const Text('Run!'))
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   Image get currentImage {
@@ -129,12 +128,41 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void runGame() async {
-    String jsonPath = await downloadJson();
     WidgetsFlutterBinding.ensureInitialized();
-    SystemChrome.setPreferredOrientations([
+    await SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
-    ]).then((value) => runApp(GameWidget(game: MyGame(jsonPath))));
+    ]);
+    if (isImageChosen) {
+      setState(() {
+        appState = 0;
+      });
+      await sendImage();
+      jsonPath = await downloadJson();
+      setState(() {
+        appState = 1;
+      });
+    } else {
+      AlertDialog alert = AlertDialog(
+        title: const Text("Error!"),
+        content: const Text("Choose image or take photo"),
+        actions: [
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () {
+              Navigator.pop(context);
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+          ),
+        ],
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
   }
 
   Future<String> downloadJson() async {
@@ -152,25 +180,25 @@ class _MyHomePageState extends State<MyHomePage> {
       await ftpConnect.downloadFileWithRetry(fileName, file);
       await ftpConnect.disconnect();
       //Showing JSON contents for debug
-      AlertDialog showText = AlertDialog(
-        title: const Text("Hello!"),
-        content: Text(await file.readAsString()),
-        actions: [
-          TextButton(
-            child: const Text("OK"),
-            onPressed: () {
-              Navigator.pop(context);
-              FocusScope.of(context).requestFocus(FocusNode());
-            },
-          ),
-        ],
-      );
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return showText;
-        },
-      );
+      // AlertDialog showText = AlertDialog(
+      //   title: const Text("Hello!"),
+      //   content: Text(await file.readAsString()),
+      //   actions: [
+      //     TextButton(
+      //       child: const Text("OK"),
+      //       onPressed: () {
+      //         Navigator.pop(context);
+      //         FocusScope.of(context).requestFocus(FocusNode());
+      //       },
+      //     ),
+      //   ],
+      // );
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return showText;
+      //   },
+      // );
     } catch (e) {
       AlertDialog alert = AlertDialog(
         title: const Text("Error!"),
@@ -196,15 +224,16 @@ class _MyHomePageState extends State<MyHomePage> {
     return file.path;
   }
 
-  void sendImage() async {
+  Future<void> sendImage() async {
     FTPConnect ftpConnect = FTPConnect(ipEditingController.text,
         user: userEditingController.text,
         pass: passEditingController.text,
         port: 2121);
     try {
-      await ftpConnect.connect();
-      await ftpConnect.uploadFile(currentFile);
-      await ftpConnect.disconnect();
+      await ftpConnect
+          .connect()
+          .then((value) => ftpConnect.uploadFile(currentFile))
+          .then((value) => ftpConnect.disconnect());
     } catch (e) {
       AlertDialog alert = AlertDialog(
         title: const Text("Error!"),
