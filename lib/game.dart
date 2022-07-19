@@ -42,8 +42,8 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
     for (final joint in world.joints) {
       if (joint is DistanceJoint) {
         canvas.drawLine(
-          joint.bodyA.position.toOffset()..scale(1, -1),
-          joint.bodyB.position.toOffset()..scale(1, -1),
+          joint.bodyA.position.toOffset().scale(1, -1),
+          joint.bodyB.position.toOffset().scale(1, -1),
           debugPaint,
         );
       }
