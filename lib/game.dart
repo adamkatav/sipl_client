@@ -202,6 +202,7 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
         ..initialize(
             body1.body, body2.body, body1.centerOfMass, body2.centerOfMass)
         ..dampingRatio = 0.0
+        ..collideConnected = true
         ..frequencyHz =
             (1 / (2 * pi) * sqrt(50 / (body2.body.mass + body1.body.mass))));
     }
