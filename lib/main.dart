@@ -21,6 +21,11 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     return MaterialApp(
       title: 'SIPL Physics client',
       theme: ThemeData(
@@ -69,7 +74,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   image: AssetImage('assets/images/sipl.jpg'),
                   fit: BoxFit.cover)),
           child: ListView(
-            //mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -82,10 +86,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: const Text('Choose Image')),
                     ElevatedButton(
                       onPressed: () {
-                        SystemChrome.setPreferredOrientations([
-                          DeviceOrientation.landscapeLeft,
-                          DeviceOrientation.landscapeRight,
-                        ]);
                         chooseImage(ImageSource.camera);
                         isImageChosen = true;
                       },
@@ -114,7 +114,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void chooseImage(var source) async {
-    //await Permission.camera.request();
     final ImagePicker _picker = ImagePicker();
     if (source == ImageSource.gallery ||
         await Permission.camera.request().isGranted) {
@@ -129,10 +128,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void runGame() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
     if (isImageChosen) {
       setState(() {
         appState = 0;
@@ -179,26 +174,6 @@ class _MyHomePageState extends State<MyHomePage> {
       file = File('${directory.path}/$fileName');
       await ftpConnect.downloadFileWithRetry(fileName, file);
       await ftpConnect.disconnect();
-      //Showing JSON contents for debug
-      // AlertDialog showText = AlertDialog(
-      //   title: const Text("Hello!"),
-      //   content: Text(await file.readAsString()),
-      //   actions: [
-      //     TextButton(
-      //       child: const Text("OK"),
-      //       onPressed: () {
-      //         Navigator.pop(context);
-      //         FocusScope.of(context).requestFocus(FocusNode());
-      //       },
-      //     ),
-      //   ],
-      // );
-      // showDialog(
-      //   context: context,
-      //   builder: (BuildContext context) {
-      //     return showText;
-      //   },
-      // );
     } catch (e) {
       AlertDialog alert = AlertDialog(
         title: const Text("Error!"),

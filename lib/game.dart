@@ -37,8 +37,6 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
     super.render(canvas);
     canvas.save();
     canvas.scale(camera.zoom);
-    //For debug, didn't render
-    //canvas.drawRect(Rect.largest, debugPaint);
     for (final joint in world.joints) {
       if (joint is DistanceJoint) {
         canvas.drawLine(
@@ -55,10 +53,8 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
   @override
   Future<void> onLoad() async {
     debugColor = Colors.white;
-    //final center = screenToWorld(camera.viewport.effectiveSize / 2);
     final bottomRight = screenToWorld(camera.viewport.effectiveSize);
-    //final upper_left = Vector2(0, 0);
-    //final bottom_left = Vector2(upper_left.x, bottom_right.y);
+    // 271 is a convinient number to have nice constents while developing on my 15" laptop
     scale = bottomRight.length / 271;
     var dummyForMouseJoint =
         Ball(Vector2(-5, 5) * scale, 0.1 * scale, bodyType: BodyType.static);
@@ -146,7 +142,6 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
       Polygon pol = await makeCart(centerOfMass, ver, (cart["radius"] * scale),
           strToVec2(cart["wheel1"]) * scale, strToVec2(cart["wheel2"]) * scale);
       cartList.add(pol);
-      //await add(pol);
     }
 
     var ballList = <Ball>[];
@@ -212,7 +207,6 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
     boundaries.forEach(add);
 
     groundBody = world.createBody(BodyDef());
-    // 271 is a convinient number to have nice constents while developing on my 14" laptop
   }
 
   //Expects scaled values
@@ -241,7 +235,7 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
       ..dampingRatio = 1
       ..frequencyHz = 5
       ..target.setFrom(grabbedBody.body.position)
-      ..collideConnected = false //Maybe set to true
+      ..collideConnected = false
       ..bodyA = groundBody
       ..bodyB = grabbedBody.body;
 
