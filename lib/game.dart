@@ -8,7 +8,7 @@ import 'package:flame/input.dart';
 import 'package:flame_forge2d/body_component.dart';
 import 'package:flame_forge2d/flame_forge2d.dart';
 import 'package:flame_forge2d/forge2d_game.dart';
-//import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
 import 'package:sipl_client/boundaries.dart';
 
 Vector2 vec2Median(List<Vector2> vecs) {
@@ -31,9 +31,30 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
   late String jsonPath;
   MyGame(this.jsonPath) : super(gravity: Vector2(0, -10.0));
   late double scale;
+
+  @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+    canvas.save();
+    canvas.scale(camera.zoom);
+    //For debug, didn't render
+    //canvas.drawRect(Rect.largest, debugPaint);
+    for (final joint in world.joints) {
+      if (joint is DistanceJoint) {
+        canvas.drawLine(
+          joint.bodyA.position.toOffset()..scale(1, -1),
+          joint.bodyB.position.toOffset()..scale(1, -1),
+          debugPaint,
+        );
+      }
+    }
+    canvas.restore();
+  }
+
   //Game onLoad
   @override
   Future<void> onLoad() async {
+    debugColor = Colors.white;
     //final center = screenToWorld(camera.viewport.effectiveSize / 2);
     final bottomRight = screenToWorld(camera.viewport.effectiveSize);
     //final upper_left = Vector2(0, 0);
