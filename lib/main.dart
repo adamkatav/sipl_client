@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
@@ -51,11 +52,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Image? _chosenImage;
   File? _chosenImageFile;
   TextEditingController ipEditingController =
-      TextEditingController(text: '192.168.68.102');
+      TextEditingController(text: '132.68.58.30');
   TextEditingController userEditingController =
       TextEditingController(text: 'adam');
   TextEditingController passEditingController =
       TextEditingController(text: '318758489');
+
   @override
   Widget build(BuildContext context) {
     Widget spinkit = const SpinKitRotatingCircle(
@@ -69,44 +71,93 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       return Scaffold(
         body: Container(
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/sipl.jpg'),
-                  fit: BoxFit.cover)),
-          child: ListView(
-            children: <Widget>[
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    ElevatedButton(
-                        onPressed: () {
-                          chooseImage(ImageSource.gallery);
-                          isImageChosen = true;
-                        },
-                        child: const Text('Choose Image')),
-                    ElevatedButton(
-                      onPressed: () {
-                        chooseImage(ImageSource.camera);
-                        isImageChosen = true;
-                      },
-                      child: const Text('Take picture'),
-                    )
-                  ]),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton(onPressed: runGame, child: const Text('Run!'))
-                ],
-              ),
-            ],
-          ),
-        ),
+            alignment: Alignment.topCenter,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+            ),
+            child: Flexible(
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                  Transform(
+                    alignment: Alignment.center,
+                    transform:
+                        Matrix4.rotationY(math.pi * (isImageChosen ? 1 : 0)),
+                    child: Image(
+                        image: currentImage.image,
+                        alignment: Alignment.topLeft,
+                        fit: BoxFit.contain),
+                  ),
+                  const Spacer(),
+                  Container(
+                      constraints: const BoxConstraints(maxWidth: 150),
+                      alignment: Alignment.topRight,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Flexible(
+                              child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.green,
+                                    onPrimary: Colors.white,
+                                    shadowColor: Colors.greenAccent,
+                                    elevation: 3,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(32.0)),
+                                  ),
+                                  onPressed: () {
+                                    chooseImage(ImageSource.gallery);
+                                    isImageChosen = true;
+                                  },
+                                  child: const Text('Gallery'),
+                                ),
+                                //const Spacer(),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.blue,
+                                      onPrimary: Colors.white,
+                                      shadowColor: Colors.greenAccent,
+                                      elevation: 3,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(32.0))),
+                                  onPressed: () {
+                                    chooseImage(ImageSource.camera);
+
+                                    isImageChosen = true;
+                                  },
+                                  child: const Text('Camera'),
+                                ),
+                                //const Spacer(),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.purple,
+                                      onPrimary: Colors.white,
+                                      shadowColor: Colors.greenAccent,
+                                      elevation: 3,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(32.0))),
+                                  onPressed: runGame,
+                                  child: const Text('Send'),
+                                ),
+                              ])),
+                          const Image(
+                              image: AssetImage('assets/images/sipl.jpg'))
+                        ],
+                      )),
+                ]))),
       );
     }
   }
 
   Image get currentImage {
-    return _chosenImage ?? Image.asset('assets/images/boar.jpg');
+    return _chosenImage ?? Image.asset('assets/images/LT.png');
   }
 
   File get currentFile {
@@ -133,9 +184,9 @@ class _MyHomePageState extends State<MyHomePage> {
         appState = 0;
       });
       await sendImage();
-      jsonPath = await downloadJson();
+      //jsonPath = await downloadJson();
       setState(() {
-        appState = 1;
+        appState = 2;
       });
     } else {
       AlertDialog alert = AlertDialog(
