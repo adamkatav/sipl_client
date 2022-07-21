@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 import 'dart:io';
+import 'package:flutter/painting.dart';
 
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
@@ -39,11 +40,18 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
     canvas.scale(camera.zoom);
     for (final joint in world.joints) {
       if (joint is DistanceJoint) {
-        canvas.drawLine(
-          joint.bodyA.position.toOffset().scale(1, -1),
-          joint.bodyB.position.toOffset().scale(1, -1),
-          debugPaint,
-        );
+        paintZigZag(
+            canvas,
+            debugPaint,
+            joint.bodyA.position.toOffset().scale(1, -1),
+            joint.bodyB.position.toOffset().scale(1, -1),
+            30,
+            1);
+        // canvas.drawLine(
+        //   joint.bodyA.position.toOffset().scale(1, -1),
+        //   joint.bodyB.position.toOffset().scale(1, -1),
+        //   debugPaint,
+        // );
       }
     }
     canvas.restore();
