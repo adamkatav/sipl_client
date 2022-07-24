@@ -70,9 +70,10 @@ class _MyHomePageState extends State<MyHomePage> {
       return Scaffold(
         body: Container(
           decoration: const BoxDecoration(
+              color: Colors.white,
               image: DecorationImage(
                   image: AssetImage('assets/images/sipl.jpg'),
-                  fit: BoxFit.cover)),
+                  fit: BoxFit.scaleDown)),
           child: ListView(
             children: <Widget>[
               Row(

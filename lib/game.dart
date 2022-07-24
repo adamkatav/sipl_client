@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
 import 'dart:io';
-import 'package:flutter/painting.dart';
 
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
