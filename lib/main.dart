@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math' as math;
 
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +27,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.landscapeRight,
     ]);
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'SIPL Physics client',
       theme: ThemeData(
         primarySwatch: Colors.purple,
@@ -60,12 +60,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget spinkit = const SpinKitRotatingCircle(
-      color: Colors.white,
-      size: 50.0,
+    Widget spinkit = SpinKitWave(
+      //color: Colors.white,
+      size: 100.0,
+      itemBuilder: (BuildContext context, int index) => DecoratedBox(
+        decoration: BoxDecoration(
+            //image: DecorationImage(image: AssetImage('assets/images/sipl.jpg'))
+            color: index.isEven
+                ? const Color.fromARGB(78, 16, 92, 207)
+                : const Color.fromARGB(78, 16, 92, 207)),
+      ),
     );
     if (appState == 0) {
-      return spinkit;
+      return Container(
+        color: Colors.white,
+        child: Container(
+            child: spinkit,
+            decoration: const BoxDecoration(
+                // color: Colors.white,
+                image: DecorationImage(
+                    image: AssetImage('assets/images/sipl.jpg')))),
+      );
+      //return spinkit;
     } else if (appState == 1) {
       return GameWidget(game: MyGame(jsonPath));
     } else {
@@ -79,15 +95,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                  Transform(
-                    alignment: Alignment.center,
-                    transform:
-                        Matrix4.rotationY(math.pi * (isImageChosen ? 1 : 0)),
-                    child: Image(
-                        image: currentImage.image,
-                        alignment: Alignment.topLeft,
-                        fit: BoxFit.contain),
-                  ),
+                  // Transform(
+                  //   alignment: Alignment.center,
+                  //   transform:
+                  //       Matrix4.rotationY(math.pi * (isImageChosen ? 1 : 0)),
+                  //   child: Image(
+                  //       image: currentImage.image,
+                  //       alignment: Alignment.topLeft,
+                  //       fit: BoxFit.contain),
+                  // ),
+                  currentImage,
                   const Spacer(),
                   Container(
                       constraints: const BoxConstraints(maxWidth: 150),
@@ -144,7 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           borderRadius:
                                               BorderRadius.circular(32.0))),
                                   onPressed: runGame,
-                                  child: const Text('Send'),
+                                  child: const Text('Exctract SPICE'),
                                 ),
                               ])),
                           const Image(
@@ -157,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Image get currentImage {
-    return _chosenImage ?? Image.asset('assets/images/LT.png');
+    return _chosenImage ?? Image.asset('assets/images/no_image.jpg');
   }
 
   File get currentFile {
