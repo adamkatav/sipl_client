@@ -161,7 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                           borderRadius:
                                               BorderRadius.circular(32.0))),
                                   onPressed: runGame,
-                                  child: const Text('Exctract SPICE'),
+                                  child: const Text('Exctract circuit'),
                                 ),
                               ])),
                           const Image(
