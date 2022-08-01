@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Image? _chosenImage;
   File? _chosenImageFile;
   TextEditingController ipEditingController =
-      TextEditingController(text: '192.168.68.102');
+      TextEditingController(text: '132.68.58.30');
   TextEditingController userEditingController =
       TextEditingController(text: 'adam');
   TextEditingController passEditingController =

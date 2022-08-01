@@ -46,11 +46,12 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
             joint.bodyB.position.toOffset().scale(1, -1),
             30,
             1);
-        // canvas.drawLine(
-        //   joint.bodyA.position.toOffset().scale(1, -1),
-        //   joint.bodyB.position.toOffset().scale(1, -1),
-        //   debugPaint,
-        // );
+      } else if (joint is RopeJoint) {
+        canvas.drawLine(
+          joint.bodyA.position.toOffset().scale(1, -1),
+          joint.bodyB.position.toOffset().scale(1, -1),
+          debugPaint,
+        );
       }
     }
     canvas.restore();
@@ -207,6 +208,55 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
         ..collideConnected = true
         ..frequencyHz =
             (1 / (2 * pi) * sqrt(50 / (body2.body.mass + body1.body.mass))));
+    }
+
+    for (var spring in data["Lines"]) {
+      var connectionA = <TappableBodyComponent>[];
+      switch (spring["connectionA"]) {
+        case "Carts":
+          connectionA = cartList;
+          break;
+        case "Balls":
+          connectionA = ballList;
+          break;
+        case "Walls":
+          connectionA = wallList;
+          break;
+        case "Blocks":
+          connectionA = blockList;
+          break;
+        case "Triangles":
+          connectionA = trigList;
+          break;
+        default:
+      }
+      var connectionB = <TappableBodyComponent>[];
+      switch (spring["connectionB"]) {
+        case "Carts":
+          connectionB = cartList;
+          break;
+        case "Balls":
+          connectionB = ballList;
+          break;
+        case "Walls":
+          connectionB = wallList;
+          break;
+        case "Blocks":
+          connectionB = blockList;
+          break;
+        case "Triangles":
+          connectionB = trigList;
+          break;
+        default:
+      }
+      var body1 = connectionA[spring["indexA"]];
+      var body2 = connectionB[spring["indexB"]];
+      world.createJoint(RopeJointDef()
+        ..bodyA = body1.body
+        ..bodyB = body2.body
+        ..collideConnected = true
+        ..maxLength = (body1.centerOfMass - body2.centerOfMass)
+            .length); // .. localAnchorA = body1.centerOfMass .. localAnchorB = body2.centerOfMass;
     }
 
     super.onLoad();
