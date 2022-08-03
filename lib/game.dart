@@ -11,7 +11,7 @@ import 'package:flame_forge2d/forge2d_game.dart';
 import 'package:flutter/material.dart';
 import 'package:sipl_client/boundaries.dart';
 
-Vector2 vec2Median(List<Vector2> vecs) {
+Vector2 vec2Avg(List<Vector2> vecs) {
   var sum = Vector2(0, 0);
   for (final v in vecs) {
     sum += v;
@@ -29,7 +29,7 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
   static late BodyComponent grabbedBody;
   late Body groundBody;
   late String jsonPath;
-  MyGame(this.jsonPath) : super(gravity: Vector2(0, -10.0));
+  MyGame(this.jsonPath) : super(gravity: Vector2(0, -30.0));
   late double scale;
 
   @override
@@ -77,7 +77,7 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
         strToVec2(trig["B"]) * scale,
         strToVec2(trig["C"]) * scale
       ];
-      var centerOfMass = vec2Median(ver);
+      var centerOfMass = vec2Avg(ver);
       //Polygon is created around center of mass so we have to shift the vertecies back in order to create them in relation to upper_left
       ver = [
         strToVec2(trig["A"]) * scale - centerOfMass,
@@ -97,7 +97,7 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
         strToVec2(block["C"]) * scale,
         strToVec2(block["D"]) * scale
       ];
-      var centerOfMass = vec2Median(ver);
+      var centerOfMass = vec2Avg(ver);
       //Polygon is created around center of mass so we have to shift the vertecies back in order to create them in relation to upper_left
       ver = [
         strToVec2(block["A"]) * scale - centerOfMass,
@@ -118,7 +118,7 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
       Vector2 O =
           Vector2(start.y - end.y, end.x - start.x) / ((end - start).length);
       var ver = [start + O, end + O, start - O, end - O];
-      var centerOfMass = vec2Median(ver);
+      var centerOfMass = vec2Avg(ver);
       //Polygon is created around center of mass so we have to shift the vertecies back in order to create them in relation to upper_left
       ver = [
         start + O - centerOfMass,
@@ -139,7 +139,7 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
         strToVec2(cart["C"]) * scale,
         strToVec2(cart["D"]) * scale
       ];
-      var centerOfMass = vec2Median(ver);
+      var centerOfMass = vec2Avg(ver);
       //Polygon is created around center of mass so we have to shift the vertecies back in order to create them in relation to upper_left
       ver = [
         strToVec2(cart["A"]) * scale - centerOfMass,
