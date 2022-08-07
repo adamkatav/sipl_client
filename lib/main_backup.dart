@@ -27,7 +27,6 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.landscapeRight,
     ]);
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'SIPL Physics client',
       theme: ThemeData(
         primarySwatch: Colors.purple,
@@ -52,12 +51,11 @@ class _MyHomePageState extends State<MyHomePage> {
   Image? _chosenImage;
   File? _chosenImageFile;
   TextEditingController ipEditingController =
-      TextEditingController(text: '192.168.0.129');
+      TextEditingController(text: '132.68.58.30');
   TextEditingController userEditingController =
       TextEditingController(text: 'adam');
   TextEditingController passEditingController =
       TextEditingController(text: '318758489');
-
   @override
   Widget build(BuildContext context) {
     Widget spinkit = const SpinKitRotatingCircle(
@@ -65,98 +63,51 @@ class _MyHomePageState extends State<MyHomePage> {
       size: 50.0,
     );
     if (appState == 0) {
-      return Container(
-          color: Colors.white,
-          child: Container(
-              child: spinkit,
-              decoration: const BoxDecoration(
-                color: Colors.black,
-              )));
-      //return spinkit;
+      return spinkit;
     } else if (appState == 1) {
       return GameWidget(game: MyGame(jsonPath));
     } else {
       return Scaffold(
         body: Container(
-            alignment: Alignment.topCenter,
-            decoration: const BoxDecoration(
+          decoration: const BoxDecoration(
               color: Colors.white,
-            ),
-            child: Flexible(
-                child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                  currentImage,
-                  const Spacer(),
-                  Container(
-                      constraints: const BoxConstraints(maxWidth: 150),
-                      alignment: Alignment.topRight,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          Flexible(
-                              child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.green,
-                                    onPrimary: Colors.white,
-                                    shadowColor: Colors.greenAccent,
-                                    elevation: 3,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(32.0)),
-                                  ),
-                                  onPressed: () {
-                                    chooseImage(ImageSource.gallery);
-                                    isImageChosen = true;
-                                  },
-                                  child: const Text('Gallery'),
-                                ),
-                                //const Spacer(),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.blue,
-                                      onPrimary: Colors.white,
-                                      shadowColor: Colors.greenAccent,
-                                      elevation: 3,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(32.0))),
-                                  onPressed: () {
-                                    chooseImage(ImageSource.camera);
-
-                                    isImageChosen = true;
-                                  },
-                                  child: const Text('Camera'),
-                                ),
-                                //const Spacer(),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.purple,
-                                      onPrimary: Colors.white,
-                                      shadowColor: Colors.greenAccent,
-                                      elevation: 3,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(32.0))),
-                                  onPressed: runGame,
-                                  child: const Text('Simulate'),
-                                ),
-                              ])),
-                          const Image(
-                              image: AssetImage('assets/images/sipl.jpg'))
-                        ],
-                      )),
-                ]))),
+              image: DecorationImage(
+                  image: AssetImage('assets/images/sipl.jpg'),
+                  fit: BoxFit.scaleDown)),
+          child: ListView(
+            children: <Widget>[
+              Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    ElevatedButton(
+                        onPressed: () {
+                          chooseImage(ImageSource.gallery);
+                          isImageChosen = true;
+                        },
+                        child: const Text('Choose Image')),
+                    ElevatedButton(
+                      onPressed: () {
+                        chooseImage(ImageSource.camera);
+                        isImageChosen = true;
+                      },
+                      child: const Text('Take picture'),
+                    )
+                  ]),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(onPressed: runGame, child: const Text('Run!'))
+                ],
+              ),
+            ],
+          ),
+        ),
       );
     }
   }
 
   Image get currentImage {
-    return _chosenImage ?? Image.asset('assets/images/no_image.jpg');
+    return _chosenImage ?? Image.asset('assets/images/boar.jpg');
   }
 
   File get currentFile {
