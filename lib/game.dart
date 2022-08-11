@@ -115,8 +115,9 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
     for (var wall in data["Walls"]) {
       var start = strToVec2(wall["A"]) * scale;
       var end = strToVec2(wall["B"]) * scale;
-      Vector2 O =
-          Vector2(start.y - end.y, end.x - start.x) / ((end - start).length);
+      Vector2 O = Vector2(start.y - end.y, end.x - start.x) /
+          ((end - start).length) /
+          4;
       var ver = [start + O, end + O, start - O, end - O];
       var centerOfMass = vec2Avg(ver);
       //Polygon is created around center of mass so we have to shift the vertecies back in order to create them in relation to upper_left
