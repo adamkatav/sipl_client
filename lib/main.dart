@@ -74,7 +74,14 @@ class _MyHomePageState extends State<MyHomePage> {
               )));
       //return spinkit;
     } else if (appState == 1) {
-      return GameWidget(game: MyGame(jsonPath));
+      return WillPopScope(
+          onWillPop: () {
+            setState(() {
+              appState = 2;
+            });
+            return Future.value(false);
+          },
+          child: GameWidget(game: MyGame(jsonPath)));
     } else {
       return Scaffold(
         body: Container(
