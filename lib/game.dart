@@ -20,8 +20,8 @@ Vector2 vec2Avg(List<Vector2> vecs) {
 }
 
 Vector2 strToVec2(String vec) {
-  return Vector2(
-      double.parse(vec.split(', ')[0]), double.parse(vec.split(', ')[1]));
+  return Vector2(double.parse(vec.split(', ')[0]) * (0.5),
+      double.parse(vec.split(', ')[1]) * (-0.5));
 }
 
 class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
