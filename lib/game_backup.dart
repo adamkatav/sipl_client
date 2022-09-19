@@ -20,8 +20,8 @@ Vector2 vec2Avg(List<Vector2> vecs) {
 }
 
 Vector2 strToVec2(String vec) {
-  return Vector2(double.parse(vec.split(', ')[0]) * (0.4),
-      double.parse(vec.split(', ')[1]) * (-0.4));
+  return Vector2(
+      double.parse(vec.split(', ')[0]), double.parse(vec.split(', ')[1]));
 }
 
 class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
@@ -115,9 +115,8 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
     for (var wall in data["Walls"]) {
       var start = strToVec2(wall["A"]) * scale;
       var end = strToVec2(wall["B"]) * scale;
-      Vector2 O = Vector2(start.y - end.y, end.x - start.x) /
-          ((end - start).length) /
-          4;
+      Vector2 O =
+          Vector2(start.y - end.y, end.x - start.x) / ((end - start).length);
       var ver = [start + O, end + O, start - O, end - O];
       var centerOfMass = vec2Avg(ver);
       //Polygon is created around center of mass so we have to shift the vertecies back in order to create them in relation to upper_left
@@ -155,8 +154,7 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
 
     var ballList = <Ball>[];
     for (var ball in data["Balls"]) {
-      Ball b = Ball(
-          strToVec2(ball["Center"]) * scale, ball["Radius"] * scale / 2,
+      Ball b = Ball(strToVec2(ball["Center"]) * scale, ball["Radius"] * scale,
           bodyType: ball["IsStatic"] ? BodyType.static : BodyType.dynamic);
       ballList.add(b);
       await add(b);
@@ -203,15 +201,13 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
       }
       var body1 = connectionA[spring["indexA"]];
       var body2 = connectionB[spring["indexB"]];
-      if (body1 != body2) {
-        world.createJoint(DistanceJointDef()
-          ..initialize(
-              body1.body, body2.body, body1.centerOfMass, body2.centerOfMass)
-          ..dampingRatio = 0.0
-          ..collideConnected = true
-          ..frequencyHz =
-              (1 / (2 * pi) * sqrt(400 / (body2.body.mass + body1.body.mass))));
-      }
+      world.createJoint(DistanceJointDef()
+        ..initialize(
+            body1.body, body2.body, body1.centerOfMass, body2.centerOfMass)
+        ..dampingRatio = 0.0
+        ..collideConnected = true
+        ..frequencyHz =
+            (1 / (2 * pi) * sqrt(50 / (body2.body.mass + body1.body.mass))));
     }
 
     for (var spring in data["Lines"]) {
@@ -255,14 +251,12 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
       }
       var body1 = connectionA[spring["indexA"]];
       var body2 = connectionB[spring["indexB"]];
-      if (body1 != body2) {
-        world.createJoint(RopeJointDef()
-          ..bodyA = body1.body
-          ..bodyB = body2.body
-          ..collideConnected = true
-          ..maxLength = (body1.centerOfMass - body2.centerOfMass)
-              .length); // .. localAnchorA = body1.centerOfMass .. localAnchorB = body2.centerOfMass;
-      }
+      world.createJoint(RopeJointDef()
+        ..bodyA = body1.body
+        ..bodyB = body2.body
+        ..collideConnected = true
+        ..maxLength = (body1.centerOfMass - body2.centerOfMass)
+            .length); // .. localAnchorA = body1.centerOfMass .. localAnchorB = body2.centerOfMass;
     }
 
     super.onLoad();
@@ -276,11 +270,9 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
   Future<Polygon> makeCart(Vector2 centerOfMass, List<Vector2> verteces,
       double wheelRadius, Vector2 wheel1Pos, Vector2 wheel2Pos,
       {BodyType bodyType = BodyType.dynamic}) async {
-    var wheel1 = Ball(
-        wheel1Pos, wheelRadius / 2 /*Cosmetic Changes because of the NN part */,
-        bodyType: bodyType);
+    var wheel1 = Ball(wheel1Pos, wheelRadius, bodyType: bodyType);
     await add(wheel1);
-    var wheel2 = Ball(wheel2Pos, wheelRadius / 2, bodyType: bodyType);
+    var wheel2 = Ball(wheel2Pos, wheelRadius, bodyType: bodyType);
     await add(wheel2);
     final cartRect = Polygon(centerOfMass, verteces, bodyType: bodyType);
     await add(cartRect);
