@@ -420,7 +420,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var paramsFile = await File(
             '${(await getApplicationDocumentsDirectory()).path}/params.txt')
         .writeAsString(
-            '.$simType ${simFirstEditingController.text == 'tran' ? '0' : ''} ${simFirstEditingController.text} ${simSecondEditingController.text} ${simThirdEditingController.text}');
+            '.$simType ${simType == 'tran' ? '0' : ''} ${simFirstEditingController.text} ${simSecondEditingController.text} ${simThirdEditingController.text}');
 
     try {
       await ftpConnect
