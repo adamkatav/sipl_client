@@ -47,7 +47,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int appState = 2;
   String jsonPath = '';
-  bool isImageChosen = false;
   Image? _chosenImage;
   File? _chosenImageFile;
   TextEditingController ipEditingController =
@@ -92,75 +91,70 @@ class _MyHomePageState extends State<MyHomePage> {
       return GameWidget(game: MyGame(jsonPath));
     } else {
       return Scaffold(
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         body: Container(
             alignment: Alignment.topCenter,
             decoration: const BoxDecoration(
               color: Colors.white,
             ),
-            child: Flexible(
-                child: Row(
-                    //crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
+            child: Row(
+                //crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
                   currentImage,
                   const Spacer(),
                   Container(
                       constraints: const BoxConstraints(maxWidth: 150),
-                      alignment: Alignment.topRight,
-                      child: Expanded(
-                          child: Column(
+                      alignment: Alignment.center,
+                      child: Column(
                         children: [
-                          Flexible(
-                              child: ListView(
-                                  // crossAxisAlignment:CrossAxisAlignment.stretch,
-                                  children: [
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Colors.green,
+                          SizedBox(
+                              width: double.infinity, // <-- match_parent
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.green,
+                                  onPrimary: Colors.white,
+                                  shadowColor: Colors.greenAccent,
+                                  elevation: 3,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(32.0)),
+                                ),
+                                onPressed: () {
+                                  chooseImage(ImageSource.gallery);
+                                },
+                                child: const Text('Gallery'),
+                              )),
+                          SizedBox(
+                              width: double.infinity, // <-- match_parent
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.blue,
                                     onPrimary: Colors.white,
-                                    shadowColor: Colors.greenAccent,
+                                    shadowColor: Colors.blueAccent,
                                     elevation: 3,
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
-                                            BorderRadius.circular(32.0)),
-                                  ),
-                                  onPressed: () {
-                                    chooseImage(ImageSource.gallery);
-                                    isImageChosen = true;
-                                  },
-                                  child: const Text('Gallery'),
-                                ),
-                                //const Spacer(),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.blue,
-                                      onPrimary: Colors.white,
-                                      shadowColor: Colors.blueAccent,
-                                      elevation: 3,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(32.0))),
-                                  onPressed: () {
-                                    chooseImage(ImageSource.camera);
-
-                                    isImageChosen = true;
-                                  },
-                                  child: const Text('Camera'),
-                                ),
-                                //const Spacer(),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.purple,
-                                      onPrimary: Colors.white,
-                                      shadowColor: Colors.purpleAccent,
-                                      elevation: 3,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(32.0))),
-                                  onPressed: runGame,
-                                  child: const Text('Exctract circuit'),
-                                ),
-                              ])),
+                                            BorderRadius.circular(32.0))),
+                                onPressed: () {
+                                  chooseImage(ImageSource.camera);
+                                },
+                                child: const Text('Camera'),
+                              )),
+                          SizedBox(
+                              width: double.infinity, // <-- match_parent
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.purple,
+                                    onPrimary: Colors.white,
+                                    shadowColor: Colors.purpleAccent,
+                                    elevation: 3,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(32.0))),
+                                onPressed: runGame,
+                                child: const Text('Exctract circuit'),
+                              )),
+                          const Spacer(),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 primary: Colors.amber,
@@ -237,14 +231,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                           TextFormField(
                                             textInputAction:
                                                 TextInputAction.next,
-                                            controller: ipEditingController,
+                                            controller: userEditingController,
                                             decoration: const InputDecoration(
                                                 labelText: 'username'),
                                           ),
                                           TextFormField(
-                                            textInputAction:
-                                                TextInputAction.next,
-                                            controller: ipEditingController,
+                                            controller: passEditingController,
                                             decoration: const InputDecoration(
                                                 labelText: 'password'),
                                           ),
@@ -257,12 +249,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               image: AssetImage('assets/images/sipl.jpg'))
                         ],
                       ))
-                      // child: Column(
-                      //   //crossAxisAlignment: CrossAxisAlignment.center,
-                      //   children: <Widget>[],
-                      // )
-                      ),
-                ]))),
+                  // child: Column(
+                  //   //crossAxisAlignment: CrossAxisAlignment.center,
+                  //   children: <Widget>[],
+                  // )
+                  ,
+                ])),
       );
     }
   }
@@ -349,7 +341,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void runGame() async {
     WidgetsFlutterBinding.ensureInitialized();
-    if (isImageChosen) {
+    if (_chosenImage != null) {
       setState(() {
         appState = 0;
       });
