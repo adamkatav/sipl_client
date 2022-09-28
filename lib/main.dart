@@ -40,7 +40,6 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
   final String title;
-
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
@@ -57,6 +56,13 @@ class _MyHomePageState extends State<MyHomePage> {
       TextEditingController(text: 'adam');
   TextEditingController passEditingController =
       TextEditingController(text: '318758489');
+  TextEditingController simFirstEditingController =
+      TextEditingController(text: (() => '')());
+  TextEditingController simSecondEditingController =
+      TextEditingController(text: (() => '')());
+  TextEditingController simThirdEditingController =
+      TextEditingController(text: (() => '')());
+  String simType = 'op';
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
       return GameWidget(game: MyGame(jsonPath));
     } else {
       return Scaffold(
+        resizeToAvoidBottomInset: true,
         body: Container(
             alignment: Alignment.topCenter,
             decoration: const BoxDecoration(
@@ -93,29 +100,19 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
             child: Flexible(
                 child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    //crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                  // Transform(
-                  //   alignment: Alignment.center,
-                  //   transform:
-                  //       Matrix4.rotationY(math.pi * (isImageChosen ? 1 : 0)),
-                  //   child: Image(
-                  //       image: currentImage.image,
-                  //       alignment: Alignment.topLeft,
-                  //       fit: BoxFit.contain),
-                  // ),
                   currentImage,
                   const Spacer(),
                   Container(
                       constraints: const BoxConstraints(maxWidth: 150),
                       alignment: Alignment.topRight,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
+                      child: Expanded(
+                          child: Column(
+                        children: [
                           Flexible(
-                              child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
+                              child: ListView(
+                                  // crossAxisAlignment:CrossAxisAlignment.stretch,
                                   children: [
                                 ElevatedButton(
                                   style: ElevatedButton.styleFrom(
@@ -138,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   style: ElevatedButton.styleFrom(
                                       primary: Colors.blue,
                                       onPrimary: Colors.white,
-                                      shadowColor: Colors.greenAccent,
+                                      shadowColor: Colors.blueAccent,
                                       elevation: 3,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
@@ -155,7 +152,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   style: ElevatedButton.styleFrom(
                                       primary: Colors.purple,
                                       onPrimary: Colors.white,
-                                      shadowColor: Colors.greenAccent,
+                                      shadowColor: Colors.purpleAccent,
                                       elevation: 3,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
@@ -164,10 +161,107 @@ class _MyHomePageState extends State<MyHomePage> {
                                   child: const Text('Exctract circuit'),
                                 ),
                               ])),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.amber,
+                                onPrimary: Colors.white,
+                                shadowColor: Colors.greenAccent,
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(32.0))),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return SimpleDialog(
+                                      title: const Text('Simulation type'),
+                                      children: [
+                                        SimpleDialogOption(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            simType = 'op';
+                                          },
+                                          child: const Text('op'),
+                                        ),
+                                        SimpleDialogOption(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            simType = 'tran';
+                                            openSimulationSettingsDialog();
+                                          },
+                                          child: const Text('tran'),
+                                        ),
+                                        SimpleDialogOption(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            simType = 'ac line';
+                                            openSimulationSettingsDialog();
+                                          },
+                                          child: const Text('ac line'),
+                                        ),
+                                        SimpleDialogOption(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            simType = 'none';
+                                          },
+                                          child: const Text('none'),
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            },
+                            child: const Text('Sim settings'),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                primary: Colors.cyan,
+                                onPrimary: Colors.white,
+                                shadowColor: Colors.cyanAccent,
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(32.0))),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return SimpleDialog(
+                                        title: const Text('App settings'),
+                                        children: [
+                                          TextFormField(
+                                            textInputAction:
+                                                TextInputAction.next,
+                                            controller: ipEditingController,
+                                            decoration: const InputDecoration(
+                                                labelText: 'IP'),
+                                          ),
+                                          TextFormField(
+                                            textInputAction:
+                                                TextInputAction.next,
+                                            controller: ipEditingController,
+                                            decoration: const InputDecoration(
+                                                labelText: 'username'),
+                                          ),
+                                          TextFormField(
+                                            textInputAction:
+                                                TextInputAction.next,
+                                            controller: ipEditingController,
+                                            decoration: const InputDecoration(
+                                                labelText: 'password'),
+                                          ),
+                                        ]);
+                                  });
+                            },
+                            child: const Text('App settings'),
+                          ),
                           const Image(
                               image: AssetImage('assets/images/sipl.jpg'))
                         ],
-                      )),
+                      ))
+                      // child: Column(
+                      //   //crossAxisAlignment: CrossAxisAlignment.center,
+                      //   children: <Widget>[],
+                      // )
+                      ),
                 ]))),
       );
     }
@@ -192,6 +286,65 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     }
     setState(() {});
+  }
+
+  void openSimulationSettingsDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            title: const Text('Simulation parameters'),
+            children: [
+              TextFormField(
+                textInputAction: TextInputAction.next,
+                controller: simFirstEditingController,
+                decoration: InputDecoration(
+                    labelText:
+                        simType == 'tran' ? 'Stop time' : 'Num of samples'),
+              ),
+              TextFormField(
+                textInputAction: TextInputAction.next,
+                controller: simSecondEditingController,
+                decoration: InputDecoration(
+                    labelText: simType == 'tran'
+                        ? 'Time to start'
+                        : 'Start frequency'),
+              ),
+              TextFormField(
+                controller: simThirdEditingController,
+                decoration: InputDecoration(
+                    labelText:
+                        simType == 'tran' ? 'Time step' : 'Stop frequency'),
+              ),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.red,
+                      onPrimary: Colors.white,
+                      shadowColor: Colors.greenAccent,
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32.0))),
+                  onPressed: () {
+                    simFirstEditingController.text = '';
+                    simSecondEditingController.text = '';
+                    simThirdEditingController.text = '';
+                  },
+                  child: const Text('Clear')),
+              ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: Colors.green,
+                      onPrimary: Colors.white,
+                      shadowColor: Colors.greenAccent,
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32.0))),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Confirm'))
+            ],
+          );
+        });
   }
 
   void runGame() async {
