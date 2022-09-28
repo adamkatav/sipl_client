@@ -417,6 +417,38 @@ class _MyHomePageState extends State<MyHomePage> {
         user: userEditingController.text,
         pass: passEditingController.text,
         port: 2121);
+    var paramsFile = await File(
+            '${(await getApplicationDocumentsDirectory()).path}/params.txt')
+        .writeAsString(
+            '.$simType ${simFirstEditingController.text} ${simSecondEditingController.text} ${simThirdEditingController.text}');
+
+    try {
+      await ftpConnect
+          .connect()
+          .then((value) => ftpConnect.uploadFile(paramsFile))
+          .then((value) => ftpConnect.disconnect());
+    } catch (e) {
+      AlertDialog alert = AlertDialog(
+        title: const Text("Error!"),
+        content: Text(e.toString()),
+        actions: [
+          TextButton(
+            child: const Text("OK"),
+            onPressed: () {
+              Navigator.pop(context);
+              FocusScope.of(context).requestFocus(FocusNode());
+            },
+          ),
+        ],
+      );
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return alert;
+        },
+      );
+    }
+
     try {
       await ftpConnect
           .connect()
