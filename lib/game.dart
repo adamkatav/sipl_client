@@ -276,12 +276,35 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
   Future<Polygon> makeCart(Vector2 centerOfMass, List<Vector2> verteces,
       double wheelRadius, Vector2 wheel1Pos, Vector2 wheel2Pos,
       {BodyType bodyType = BodyType.dynamic}) async {
+    // var wheel1 = Ball(
+    //     wheel1Pos, wheelRadius / 2 /*Cosmetic Changes because of the NN part */,
+    //     bodyType: bodyType);
+    // await add(wheel1);
+    // var wheel2 = Ball(wheel2Pos, wheelRadius / 2, bodyType: bodyType);
+    // await add(wheel2);
+    wheelRadius = (min((verteces[2] - verteces[3]).length / 4, wheelRadius));
+    wheelRadius *= 0.5;
+    Vector2 bottomDirection = (verteces[2] - verteces[3]).normalized();
+    Vector2 bottomDirectionOrt = Vector2(0, 0);
+    bottomDirection.scaleOrthogonalInto(
+        scale = (wheelRadius), bottomDirectionOrt);
     var wheel1 = Ball(
-        wheel1Pos, wheelRadius / 2 /*Cosmetic Changes because of the NN part */,
+        verteces[2] +
+            centerOfMass -
+            bottomDirection * (wheelRadius * 1.5) +
+            bottomDirectionOrt,
+        wheelRadius /*Cosmetic Changes because of the NN part */,
         bodyType: bodyType);
     await add(wheel1);
-    var wheel2 = Ball(wheel2Pos, wheelRadius / 2, bodyType: bodyType);
+    var wheel2 = Ball(
+        verteces[3] +
+            centerOfMass +
+            bottomDirection * (wheelRadius * 1.5) +
+            bottomDirectionOrt,
+        wheelRadius,
+        bodyType: bodyType);
     await add(wheel2);
+
     final cartRect = Polygon(centerOfMass, verteces, bodyType: bodyType);
     await add(cartRect);
 
