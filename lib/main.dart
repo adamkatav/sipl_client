@@ -56,12 +56,12 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController passEditingController =
       TextEditingController(text: '318758489');
   TextEditingController simFirstEditingController =
-      TextEditingController(text: (() => '')());
+      TextEditingController(text: (() => '5')());
   TextEditingController simSecondEditingController =
-      TextEditingController(text: (() => '')());
+      TextEditingController(text: (() => '0')());
   TextEditingController simThirdEditingController =
-      TextEditingController(text: (() => '')());
-  String simType = 'op';
+      TextEditingController(text: (() => '0.01')());
+  String simType = 'tran';
 
   @override
   Widget build(BuildContext context) {
