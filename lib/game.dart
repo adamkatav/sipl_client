@@ -62,8 +62,8 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
   Future<void> onLoad() async {
     debugColor = Colors.white;
     final bottomRight = screenToWorld(camera.viewport.effectiveSize);
-    // 271 is a convinient number to have nice constents while developing on my 15" laptop
-    scale = bottomRight.length / 271;
+
+    scale = bottomRight.length / 250;
     var dummyForMouseJoint =
         Ball(Vector2(-5, 5) * scale, 0.1 * scale, bodyType: BodyType.static);
     await add(dummyForMouseJoint);
