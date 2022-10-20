@@ -84,7 +84,7 @@ class MyGame extends Forge2DGame with MultiTouchDragDetector, HasTappables {
         strToVec2(trig["B"]) * scale - centerOfMass,
         strToVec2(trig["C"]) * scale - centerOfMass
       ];
-      Polygon pol = Polygon(centerOfMass, ver, bodyType: BodyType.dynamic);
+      Polygon pol = Polygon(centerOfMass, ver, bodyType: BodyType.static);
       trigList.add(pol);
       await add(pol);
     }
